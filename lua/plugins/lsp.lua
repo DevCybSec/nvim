@@ -1,9 +1,8 @@
 return {
 -- LSP Support
    {
-	"neovim/nvim-lspconfig",
-	dependencies = {
-	         "williamboman/mason.nvim",
+	"williamboman/mason.nvim",
+	dependencies = { 
 	         "williamboman/mason-lspconfig.nvim",
 	         "hrsh7th/nvim-cmp",         -- Autocompletado
 	         "hrsh7th/cmp-nvim-lsp",
@@ -12,17 +11,23 @@ return {
 	config = function()
              require("mason").setup()
              require("mason-lspconfig").setup({
-		     ensure_installed = { 
-				"gopls",           -- gO
-				"ts_ls",           -- tYPEsCRIPT (nESTjs)
-				"eslint",          -- lINTING
-				"tailwindcss",
-			},
-	     })
-	local lspconfig = require("lspconfig")
-        local capabilities = require("cmp_nvim_lsp").default_capabilities()
-        lspconfig.gopls.setup({ capabilities = capabilities })
-        lspconfig.ts_ls.setup({ capabilities = capabilities })
+		            ensure_installed = { "gopls", "ts_ls"},
+	           })
+	          
+             vim.lsp.config("gopls", {
+                 cmd = { "gopls" },
+                 filetypes = { "go", "gomod", "gowork", "gotmpl" },
+                 root_markers = { "go.work", "go.mod", ".git" },
+            })
+
+            vim.lsp.enable("gopls")
+
+            vim.lsp.config("ts_ls", {
+                cmd = { "typescript-language-server", "--stdio" },
+                filetypes = { "javascript", "typescript", "typescriptreact" },
+                root_markers = { "package.json", "tsconfig.json", ".git" },
+            })
+            vim.lsp.enable("ts_ls")
       end,
-        },
+    },
 }
